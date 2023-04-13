@@ -35,6 +35,7 @@ baseimage=`grep FROM Dockerfile | sed -e 's/FROM //'`
 ${ENGINE_CMD} pull $baseimage
 
 ${ENGINE_CMD} buildx build \
+       --platform=linux/amd64,linux/arm64/v8 \
        --build-arg http_proxy=$http_proxy \
        --build-arg HTTP_PROXY=$http_proxy \
        --build-arg https_proxy=$https_proxy \
@@ -63,6 +64,7 @@ sed -i -e "s#crops/yocto#$REPO#" Dockerfile
 
 # Lastly build the image
 ${ENGINE_CMD} buildx build \
+       --platform=linux/amd64,linux/arm64/v8 \
        --build-arg http_proxy=$http_proxy \
        --build-arg HTTP_PROXY=$http_proxy \
        --build-arg https_proxy=$https_proxy \
