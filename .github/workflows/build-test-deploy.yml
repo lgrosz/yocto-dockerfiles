@@ -8,10 +8,6 @@ on:
   # Allow for manually running
   workflow_dispatch:
 
-  # Run at 00:52 UTC every Saturday
-  schedule:
-    - cron: '52 0 * * 6'
-
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
@@ -19,25 +15,25 @@ jobs:
       fail-fast: false
       matrix:
         distro_to_build: [
-          alma-8,
-          alma-9,
-          centos-7,
-          debian-9,
-          debian-10,
-          debian-11,
-          fedora-34,
-          fedora-35,
-          fedora-36,
-          opensuse-15.2,
-          opensuse-15.3,
-          opensuse-15.4,
-          ubuntu-18.04,
-          ubuntu-20.04,
-          ubuntu-22.04
+          #alma-8,
+          #alma-9,
+          #centos-7,
+          #debian-9,
+          #debian-10,
+          #debian-11,
+          #fedora-34,
+          #fedora-35,
+          #fedora-36,
+          #opensuse-15.2,
+          #opensuse-15.3,
+          #opensuse-15.4,
+          #ubuntu-18.04,
+          ubuntu-20.04
+          #ubuntu-22.04
         ]
     env:
       DISTRO_TO_BUILD: ${{ matrix.distro_to_build }}
-      REPO: crops/yocto
+      REPO: lgrosz/yocto
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
