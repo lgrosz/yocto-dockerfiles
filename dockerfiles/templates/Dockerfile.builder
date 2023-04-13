@@ -4,7 +4,10 @@
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-FROM crops/yocto:DISTRO_TO_BUILD-base
+ARG REPO
+ARG DISTRO_TO_BUILD
+
+FROM $REPO:$DISTRO_TO_BUILD-base
 
 USER root
 COPY distro-entry.sh runbitbake.py /usr/local/bin/
