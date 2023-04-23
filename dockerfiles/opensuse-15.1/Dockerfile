@@ -1,10 +1,10 @@
-# opensuse-15.2-base
+# opensuse-15.1-base
 # Copyright (C) 2015-2020 Intel Corporation
 #
 # SPDX-License-Identifier: GPL-2.0-only
 ##
 
-FROM opensuse/leap:15.2
+FROM opensuse/leap:15.1
 
 RUN zypper --non-interactive install \
                    bzip2 \

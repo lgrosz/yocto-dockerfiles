@@ -1,15 +1,15 @@
-# ubuntu-22.04-base
-# Copyright (C) 2020-2021 Intel Corporation
-# Copyright (C) 2022 Konsulko Group
+# debian-8-base
+# Copyright (C) 2015-2021 Intel Corporation
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-FROM ubuntu:22.04
+FROM debian:8
 
 ARG TARGETPLATFORM
 
-RUN apt-get update && \
+RUN apt-get clean && \
+    apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         gawk \
         wget \
@@ -22,28 +22,20 @@ RUN apt-get update && \
         build-essential \
         chrpath \
         socat \
+        python \
         python3 \
-        python3-pip \
-        python3-pexpect \
-        xz-utils  \
-        locales \
+	python3-pip \
         cpio \
+        xz-utils \
+        locales \
         screen \
         tmux \
         sudo \
-        iputils-ping \
-        python3-git \
-        python3-jinja2 \
-        libegl1-mesa \
-        libsdl1.2-dev \
-        pylint \
-        xterm \
-        iproute2 \
         fluxbox \
+        procps \
         tightvncserver \
-        lz4 \
-        zstd \
-        file && \
+        liblz4-tool \
+        zstd && \
     case ${TARGETPLATFORM} in \
         "linux/amd64") \
             DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -57,9 +49,13 @@ RUN apt-get update && \
     echo "" | vncpasswd -f > /etc/vncskel/.vnc/passwd && \
     chmod 0600 /etc/vncskel/.vnc/passwd && \
     useradd -U -m yoctouser && \
-    /usr/sbin/locale-gen en_US.UTF-8 && \
-    echo 'dash dash/sh boolean false' | debconf-set-selections && \
-    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+    echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen
+
+# Install buildtools. The original reason this was needed was due to a
+# Python 3.6 requirement.
+COPY install-buildtools.sh /
+RUN bash /install-buildtools.sh && \
+    rm /install-buildtools.sh
 
 COPY build-install-dumb-init.sh /
 RUN  bash /build-install-dumb-init.sh && \

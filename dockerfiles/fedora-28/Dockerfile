@@ -1,11 +1,10 @@
-# fedora-35-base
+# fedora-28-base
 # Copyright (C) 2021 Intel Corporation
-# Copyright (C) 2021 Konsulko Group
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-FROM fedora:35
+FROM fedora:28
 
 RUN dnf -y update && \
     dnf -y install \

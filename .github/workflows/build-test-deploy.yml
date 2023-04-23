@@ -21,21 +21,17 @@ jobs:
       fail-fast: false
       matrix:
         distro_to_build: [
-          alma-8,
-          alma-9,
           centos-7,
+          debian-8,
           debian-9,
           debian-10,
-          debian-11,
-          fedora-34,
-          fedora-35,
-          fedora-36,
-          opensuse-15.2,
-          opensuse-15.3,
-          opensuse-15.4,
+          fedora-28,
+          fedora-29,
+          fedora-30,
+          opensuse-15.1,
+          ubuntu-16.04,
           ubuntu-18.04,
-          ubuntu-20.04,
-          ubuntu-22.04
+          ubuntu-19.04
         ]
         targetplatform: [
           linux/amd64
@@ -47,6 +43,11 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        id: extract_branch
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -71,8 +72,8 @@ jobs:
           build-args: |
               TARGETPLATFORM=${{ matrix.targetplatform }}
           tags: |
-            ${{ vars.REPO }}:${{ matrix.distro_to_build }}-base
-            ghcr.io/${{ vars.REPO }}:${{ matrix.distro_to_build }}-base
+            ${{ vars.REPO }}:${{ steps.extract_branch.outputs.branch }}-${{ matrix.distro_to_build }}-base
+            ghcr.io/${{ vars.REPO }}:${{ steps.extract_branch.outputs.branch }}-${{ matrix.distro_to_build }}-base
 
       - run: |
           mv dockerfiles/templates/Dockerfile.builder dockerfiles/templates/Dockerfile
@@ -84,9 +85,9 @@ jobs:
           push: true
           build-args: |
               REPO=${{ vars.REPO }}
-              DISTRO_TO_BUILD=${{ matrix.distro_to_build }}
+              DISTRO_TO_BUILD=${{ steps.extract_branch.outputs.branch }}-${{ matrix.distro_to_build }}
           tags: |
-            ${{ vars.REPO }}:${{ matrix.distro_to_build }}-builder
-            ghcr.io/${{ vars.REPO }}:${{ matrix.distro_to_build }}-builder
+            ${{ vars.REPO }}:${{ steps.extract_branch.outputs.branch }}-${{ matrix.distro_to_build }}-builder
+            ghcr.io/${{ vars.REPO }}:${{ steps.extract_branch.outputs.branch }}-${{ matrix.distro_to_build }}-builder
 
 

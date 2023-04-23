@@ -1,41 +1,41 @@
-# debian-11-base
+# ubuntu-19.04-base
 # Copyright (C) 2015-2021 Intel Corporation
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-FROM debian:11
+FROM ubuntu:19.04
 
 ARG TARGETPLATFORM
 
-RUN apt-get clean && \
-    apt-get update && \
+RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        build-essential \
-        chrpath \
-        cpio \
-        diffstat \
-        fluxbox \
         gawk \
+        wget \
         git-core \
-        locales \
-	lz4 \
-        procps \
-	python \
-        python3 \
-	python3-pip \
-        screen \
-        socat \
         subversion \
-        sudo \
+        diffstat \
+        unzip \
         sysstat \
         texinfo \
-        tightvncserver \
+        build-essential \
+        chrpath \
+        socat \
+        python \
+        python3 \
+	python3-pip \
+        xz-utils  \
+        locales \
+        cpio \
+        screen \
         tmux \
-        unzip \
-        wget \
-        xz-utils \
-	zstd && \
+        sudo \
+        iputils-ping \
+        iproute2 \
+        fluxbox \
+        tightvncserver \
+        liblz4-tool \
+        zstd && \
     case ${TARGETPLATFORM} in \
         "linux/amd64") \
             DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -49,9 +49,17 @@ RUN apt-get clean && \
     echo "" | vncpasswd -f > /etc/vncskel/.vnc/passwd && \
     chmod 0600 /etc/vncskel/.vnc/passwd && \
     useradd -U -m yoctouser && \
-    echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen
+    /usr/sbin/locale-gen en_US.UTF-8 && \
+    echo 'dash dash/sh boolean false' | debconf-set-selections && \
+    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
-COPY build-install-dumb-init.sh  /
+# Install buildtools due to python 3.8
+
+COPY install-buildtools.sh /
+RUN bash /install-buildtools.sh && \
+    rm /install-buildtools.sh
+
+COPY build-install-dumb-init.sh /
 RUN  bash /build-install-dumb-init.sh && \
      rm /build-install-dumb-init.sh && \
      apt-get clean

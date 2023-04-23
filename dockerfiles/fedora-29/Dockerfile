@@ -1,11 +1,11 @@
-# fedora-36-base
+# fedora-29-base
 # Copyright (C) 2021 Intel Corporation
-# Copyright (C) 2021-2022 Konsulko Group
+# Copyright (C) 2021 Konsulko Group
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-FROM fedora:36
+FROM fedora:29
 
 RUN dnf -y update && \
     dnf -y install \
@@ -49,9 +49,7 @@ RUN dnf -y update && \
         SDL-devel \
         xterm \
         rpcgen \
-	lz4 \
-	zstd \
-        \
+
         # These packages were added because of reasons such as fewer packages
         # being in the container image by default
         fluxbox \
@@ -63,7 +61,9 @@ RUN dnf -y update && \
         sudo \
         screen \
         tigervnc-server \
-        tmux && \
+        tmux \
+        lz4 \
+        zstd && \
     cp -af /etc/skel/ /etc/vncskel/ && \
     echo "export DISPLAY=1" >>/etc/vncskel/.bashrc && \
     mkdir  /etc/vncskel/.vnc && \

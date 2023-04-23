@@ -1,10 +1,10 @@
-# ubuntu-20.04-base
-# Copyright (C) 2020-2021 Intel Corporation
+# ubuntu-16.04-base
+# Copyright (C) 2015-2021 Intel Corporation
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:16.04
 
 ARG TARGETPLATFORM
 
@@ -23,8 +23,7 @@ RUN apt-get update && \
         socat \
         python \
         python3 \
-        python3-pip \
-        python3-pexpect \
+	python3-pip \
         xz-utils  \
         locales \
         cpio \
@@ -32,16 +31,10 @@ RUN apt-get update && \
         tmux \
         sudo \
         iputils-ping \
-        python3-git \
-        python3-jinja2 \
-        libegl1-mesa \
-        libsdl1.2-dev \
-        pylint3 \
-        xterm \
         iproute2 \
         fluxbox \
         tightvncserver \
-        lz4 \
+        liblz4-tool \
         zstd && \
     case ${TARGETPLATFORM} in \
         "linux/amd64") \
@@ -59,6 +52,12 @@ RUN apt-get update && \
     /usr/sbin/locale-gen en_US.UTF-8 && \
     echo 'dash dash/sh boolean false' | debconf-set-selections && \
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+# Install buildtools due to python 3.8
+
+COPY install-buildtools.sh /
+RUN bash /install-buildtools.sh && \
+    rm /install-buildtools.sh
 
 COPY build-install-dumb-init.sh /
 RUN  bash /build-install-dumb-init.sh && \
