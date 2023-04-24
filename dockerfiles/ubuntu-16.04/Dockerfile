@@ -10,31 +10,32 @@ ARG TARGETPLATFORM
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        gawk \
-        wget \
-        git-core \
-        subversion \
-        diffstat \
-        unzip \
-        sysstat \
-        texinfo \
         build-essential \
         chrpath \
-        socat \
+        cpio \
+        debianutils \
+        diffstat \
+        gawk \
+        git-core \
+        iputils-ping \
+        libegl1-mesa \
+        libsdl1.2-dev \
+        locales \
+        pylint3 \
         python \
         python3 \
-	python3-pip \
-        xz-utils  \
-        locales \
-        cpio \
-        screen \
-        tmux \
+        python3-git \
+        python3-jinja2 \
+        python3-pexpect \
+        python3-pip \
+        rsync \
+        socat \
         sudo \
-        iputils-ping \
-        iproute2 \
-        fluxbox \
-        tightvncserver \
-        liblz4-tool \
+        texinfo \
+        unzip \
+        wget \
+        xterm \
+        xz-utils  \
         zstd && \
     case ${TARGETPLATFORM} in \
         "linux/amd64") \
@@ -43,21 +44,10 @@ RUN apt-get update && \
                 g++-multilib \
             ;; \
     esac && \
-    cp -af /etc/skel/ /etc/vncskel/ && \
-    echo "export DISPLAY=1" >>/etc/vncskel/.bashrc && \
-    mkdir  /etc/vncskel/.vnc && \
-    echo "" | vncpasswd -f > /etc/vncskel/.vnc/passwd && \
-    chmod 0600 /etc/vncskel/.vnc/passwd && \
     useradd -U -m yoctouser && \
     /usr/sbin/locale-gen en_US.UTF-8 && \
     echo 'dash dash/sh boolean false' | debconf-set-selections && \
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
-
-# Install buildtools due to python 3.8
-
-COPY install-buildtools.sh /
-RUN bash /install-buildtools.sh && \
-    rm /install-buildtools.sh
 
 COPY build-install-dumb-init.sh /
 RUN  bash /build-install-dumb-init.sh && \
